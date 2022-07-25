@@ -1,0 +1,22 @@
+#FUNCTION TO GET MAPE AND R-SQAURED VALUES 
+
+import sk_learn
+#df = test dataset
+#model = trained model 
+#target = the variable that needs to be predicted 
+#req_col = a list of variables that needs to be in the test dataset for prediction excluding the target variable
+
+
+def get_mape_r2_value(df,model,target,req_col):
+    
+    #predicting the target 
+    df['pred_'+ target] = model.predict(exog= df[req_col])
+    
+    #getting the error
+    df['error'] = df[target] - df['pred_'+ target]
+
+    # MAPE CALULATION
+    mape = ((np.abs(df['error']/(df[target]))).sum())/len(test_df)
+    r2 = r2_score(df[target], df['pred_'+target])
+    print("MAPE:", round(mape*100,2),"%",'\nR-Squared:', round(r2*100,2),"%")
+    return df
