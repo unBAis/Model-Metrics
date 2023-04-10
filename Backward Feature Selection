@@ -1,4 +1,5 @@
-##It runs the logistic regression and selects the feature backwardly on the basis of the significance of feature
+##It runs the logistic regression and selects the feature backwardly on the basis of the statistical significance of the feature
+## one may change the model from logistic to any other statmodels model. 
 
 ##running backward LR with p_value as the significance metric
 feat = list(X_train.columns)
