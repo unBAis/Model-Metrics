@@ -1,0 +1,48 @@
+##It runs the logistic regression and selects the feature backwardly on the basis of the significance of feature
+
+##running backward LR with p_value as the significance metric
+feat = list(X_train.columns)
+int_feat = len(X_train.columns)
+val = 0
+pdf_list = []
+sig_feat = []
+while val < int_feat:
+    
+    #if model dont raise any error
+    try:
+        model = sm.Logit(y_train,X_train[feat]).fit()
+        
+        print("\n","model completed:",val,"\n")
+
+        #extracting P_value
+        p_df = pd.DataFrame(model.pvalues).reset_index()
+        p_df.columns = ['feature','p_value']
+        p_df = p_df.sort_values(by = ['p_value']).reset_index(drop = True)
+        
+        #removing features with NA p_value
+        p_df = p_df[p_df.p_value.isna()==False]
+        
+        #extracting features with significant p_value
+        sig_feat += list(p_df[p_df.p_value <=0.05].feature)
+        print("significant feature:",sig_feat)
+    
+        p_df['iteration'] = val
+        
+        #storing it in a list 
+        pdf_list.append(p_df)
+        
+        #removing the bottom most feature (highest p_value) 
+        new_feat = list(p_df.feature.values)
+        feat = new_feat[:len(new_feat)- 1]
+        
+        #going to the next iteration
+        val += 1
+        
+    #if model raise any matrix error
+    except:
+        print("model couldn't be run for:",val)
+        #going to the next iteration since model couldnt be run
+        feat = feat[:len(feat)- 1]
+        val += 1
+    
+    
